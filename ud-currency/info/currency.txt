@@ -1,0 +1,12 @@
+How To Use UD Currency
+
+local playerId = source -- the ID of the player you want to target
+local amountToDeduct = 500 -- any amount you want to deduct
+
+TriggerEvent('currency:removeCashEvent', playerId, amountToDeduct)
+
+Get Player Cash: TriggerServerEvent('currency:getCash')
+
+Add Cash To Player: TriggerServerEvent('currency:addCashEvent', amount)
+
+Remove Cash From Player: TriggerServerEvent('currency:removeCashEvent', amount)

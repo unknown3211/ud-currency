@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: transparent;
+    color: rgb(0, 0, 0);
+    overflow: hidden;
+}
+
+#cashStatus {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 25px;
+    right: 10px;
+    font-size: 30px; 
+}
+
+#cashIcon {
+    display: none;
+    margin-right: 5px;
+}
+
+.hidden {
+    display: none;
+}
