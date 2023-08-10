@@ -58,18 +58,6 @@ RegisterCommand("udaddcash", function(source, args, rawCommand)
     TriggerEvent("currency:addCashEvent", source, amount)
 end, false)
 
-RegisterCommand("printcash", function(source, args, rawCommand)
-    local identifier = GetPlayerIdentifiers(source)[1]
-
-    exports.ghmattimysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
-        if result[1] then
-            TriggerClientEvent('chat:addMessage', source, { args = { '^2Cash', 'Your cash: $' .. result[1].cash } })
-        else
-            TriggerClientEvent('chat:addMessage', source, { args = { '^1ERROR', 'You have no cash record in the database.' } })
-        end
-    end)
-end, false)
-
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(60000) -- waits for 1 minute
