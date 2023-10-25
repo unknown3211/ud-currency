@@ -4,12 +4,11 @@ local isUIOpen = false
 RegisterNetEvent('currency:setCash')
 AddEventHandler('currency:setCash', function(cash)
     playerCash = cash
-    --print("Your cash: $" .. playerCash)
 end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(10000)  -- Wait 10 seconds after player joins, then requests their cash amount
+        Citizen.Wait(10000)
         TriggerServerEvent('currency:getCash')
     end
 end)
@@ -32,7 +31,7 @@ AddEventHandler('currency:receiveCashStatus', function(cash)
         cash = cash
     })
     
-    Citizen.Wait(5000) -- Shows for 5 seconds
+    Citizen.Wait(5000)
     
     SendNUIMessage({
         action = "closeUI"

@@ -5,11 +5,11 @@ AddEventHandler('currency:getCash', function()
     local source = source
     local identifier = GetPlayerIdentifiers(source)[1]
     
-    exports.ghmattimysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
+    exports.oxmysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
         if result[1] then
             TriggerClientEvent('currency:setCash', source, result[1].cash)
         else
-            exports.ghmattimysql:execute('INSERT INTO currency (identifier, cash) VALUES (@identifier, 500)', {
+            exports.oxmysql:execute('INSERT INTO currency (identifier, cash) VALUES (@identifier, 500)', {
                 ['@identifier'] = identifier
             }, function()
                 TriggerClientEvent('currency:setCash', source, 500)
@@ -22,7 +22,7 @@ RegisterServerEvent("currency:removeCashEvent")
 AddEventHandler("currency:removeCashEvent", function(playerId, amount)
     local identifier = GetPlayerIdentifiers(playerId)[1]
 
-    exports.ghmattimysql:execute("UPDATE currency SET cash = cash - @amount WHERE identifier = @identifier", { ['@amount'] = amount, ['@identifier'] = identifier }, function()
+    exports.oxmysql:execute("UPDATE currency SET cash = cash - @amount WHERE identifier = @identifier", { ['@amount'] = amount, ['@identifier'] = identifier }, function()
         TriggerClientEvent('currency:getCash', playerId)
     end)
 end)
@@ -31,7 +31,7 @@ RegisterServerEvent("currency:addCashEvent")
 AddEventHandler("currency:addCashEvent", function(playerId, amount)
     local identifier = GetPlayerIdentifiers(playerId)[1]
 
-    exports.ghmattimysql:execute("UPDATE currency SET cash = cash + @amount WHERE identifier = @identifier", { ['@amount'] = amount, ['@identifier'] = identifier }, function()
+    exports.oxmysql:execute("UPDATE currency SET cash = cash + @amount WHERE identifier = @identifier", { ['@amount'] = amount, ['@identifier'] = identifier }, function()
         TriggerClientEvent('currency:getCash', playerId)
     end)
 end)
@@ -58,6 +58,18 @@ RegisterCommand("udaddcash", function(source, args, rawCommand)
     TriggerEvent("currency:addCashEvent", source, amount)
 end, false)
 
+RegisterCommand("printcash", function(source, args, rawCommand)
+    local identifier = GetPlayerIdentifiers(source)[1]
+
+    exports.oxmysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
+        if result[1] then
+            TriggerClientEvent('chat:addMessage', source, { args = { '^2Cash', 'Your cash: $' .. result[1].cash } })
+        else
+            TriggerClientEvent('chat:addMessage', source, { args = { '^1ERROR', 'You have no cash record in the database.' } })
+        end
+    end)
+end, false)
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(60000) -- waits for 1 minute
@@ -67,7 +79,7 @@ Citizen.CreateThread(function()
         for _, playerId in ipairs(players) do
             local identifier = GetPlayerIdentifiers(playerId)[1]
 
-            exports.ghmattimysql:execute("UPDATE currency SET cash = cash + @amount WHERE identifier = @identifier", { ['@amount'] = cashPerMinute, ['@identifier'] = identifier }, function()
+            exports.oxmysql:execute("UPDATE currency SET cash = cash + @amount WHERE identifier = @identifier", { ['@amount'] = cashPerMinute, ['@identifier'] = identifier }, function()
                 TriggerClientEvent('currency:getCash', playerId)
             end)
         end
@@ -83,7 +95,7 @@ AddEventHandler('currency:requestCashStatus', function()
     local source = source
     local identifier = GetPlayerIdentifiers(source)[1]
     
-    exports.ghmattimysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
+    exports.oxmysql:execute("SELECT cash FROM currency WHERE identifier = @identifier", { ['@identifier'] = identifier }, function(result)
         if result[1] then
             TriggerClientEvent('currency:receiveCashStatus', source, result[1].cash)
         end
